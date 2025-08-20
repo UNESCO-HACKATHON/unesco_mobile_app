@@ -51,7 +51,7 @@ class ScreenshotService : Service() {
                         null
                 )
 
-                // For testing, reduce delay to 500ms (or 0) to speed up; increase if dialog is captured in screenshot
+                
                 Handler(Looper.getMainLooper()).postDelayed({ takeScreenshotNow() }, 500)
                 return START_NOT_STICKY
         }
@@ -77,13 +77,13 @@ class ScreenshotService : Service() {
         }
 
         private fun takeScreenshotNow() {
-                // Use system metrics (safe in a Service)
+                
                 val metrics = Resources.getSystem().displayMetrics
                 val width = metrics.widthPixels
                 val height = metrics.heightPixels
                 val density = metrics.densityDpi
 
-                // Background thread for ImageReader callback
+                
                 handlerThread = HandlerThread("ScreenshotThread").apply { start() }
                 handler = Handler(handlerThread!!.looper)
 
@@ -91,11 +91,11 @@ class ScreenshotService : Service() {
                         ImageReader.newInstance(
                                 width,
                                 height,
-                                PixelFormat.RGBA_8888, /*maxImages*/
+                                PixelFormat.RGBA_8888, 
                                 2
                         )
 
-                // Set listener FIRST
+                
                 imageReader!!.setOnImageAvailableListener(
                         { reader ->
                                 if (timedOut) return@setOnImageAvailableListener
@@ -120,7 +120,7 @@ class ScreenshotService : Service() {
                                         val cropped =
                                                 Bitmap.createBitmap(bitmap, 0, 0, width, height)
 
-                                        // Make filename unique to avoid overwriting
+                                        
                                         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
                                         val outFile =
                                                 File(
@@ -139,16 +139,16 @@ class ScreenshotService : Service() {
                                         )
                                         val broadcastIntent = Intent("SCREENSHOT_TAKEN")
                                         broadcastIntent.putExtra("path", outFile.absolutePath)
-                                        sendBroadcast(broadcastIntent) // <-- Standard sendBroadcast
+                                        sendBroadcast(broadcastIntent) 
 
                                         
                                 } catch (t: Throwable) {
                                         Log.e("ScreenshotService", "Saving screenshot failed", t)
-                                        // Optional: Broadcast error
+                                        
                                         val broadcastIntent = Intent("SCREENSHOT_TAKEN")
-                                        sendBroadcast(broadcastIntent) // <-- Standard sendBroadcast
+                                        sendBroadcast(broadcastIntent) 
                                 } finally {
-                                        // Always close/release
+                                        
                                         try {
                                                 image.close()
                                         } catch (_: Throwable) {}
@@ -158,7 +158,7 @@ class ScreenshotService : Service() {
                         handler
                 )
 
-                // THEN create the virtual display (auto mirror the main screen)
+                
                 virtualDisplay =
                         mediaProjection?.createVirtualDisplay(
                                 "screenshot",
@@ -171,7 +171,7 @@ class ScreenshotService : Service() {
                                 null
                         )
 
-                // Fallback timeout: increase to 3000ms if frames are slow on your device
+                
                 handler?.postDelayed(
                         {
                                 if (virtualDisplay != null && imageReader != null) {

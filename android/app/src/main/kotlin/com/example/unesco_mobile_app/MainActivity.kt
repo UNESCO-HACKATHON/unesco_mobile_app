@@ -6,9 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.projection.MediaProjectionManager
-import android.os.Build // Ensure this import is present
+import android.os.Build 
 import android.os.Bundle
-import android.util.Log // Add for debugging
+import android.util.Log 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -18,11 +18,11 @@ class MainActivity : FlutterActivity() {
     companion object {
         private const val CHANNEL = "screenshot_channel"
         private const val SCREENSHOT_REQUEST_CODE = 1001
-        private const val TAG = "MainActivity" // For logs
+        private const val TAG = "MainActivity" 
     }
 
     private lateinit var projectionManager: MediaProjectionManager
-    private var pendingResult: MethodChannel.Result? = null // store flutter result
+    private var pendingResult: MethodChannel.Result? = null 
     private lateinit var screenshotReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,17 +30,17 @@ class MainActivity : FlutterActivity() {
         projectionManager =
                 getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
 
-        // 🔥 Register receiver to listen for screenshot saved
+        
         screenshotReceiver =
                 object : BroadcastReceiver() {
                     override fun onReceive(context: Context?, intent: Intent?) {
                         val path = intent?.getStringExtra("path")
-                        Log.d(TAG, "Received broadcast with path: $path") // Debug log
+                        Log.d(TAG, "Received broadcast with path: $path") 
                         if (path != null) {
-                            pendingResult?.success(path) // return file path to flutter
+                            pendingResult?.success(path) 
                             pendingResult = null
                         } else {
-                            // Optional: Handle error if no path
+                            
                             pendingResult?.error("SAVE_FAILED", "Screenshot save failed", null)
                             pendingResult = null
                         }
@@ -49,7 +49,7 @@ class MainActivity : FlutterActivity() {
 
         val intentFilter = IntentFilter("SCREENSHOT_TAKEN")
         if (Build.VERSION.SDK_INT >= 34) {
-            registerReceiver(screenshotReceiver, intentFilter, 2) // 2 == Context.RECEIVER_EXPORTED
+            registerReceiver(screenshotReceiver, intentFilter, 2) 
         } else {
             registerReceiver(screenshotReceiver, intentFilter)
         }
@@ -69,7 +69,7 @@ class MainActivity : FlutterActivity() {
             if (call.method == "takeScreenshot") {
                 val intent = projectionManager.createScreenCaptureIntent()
                 startActivityForResult(intent, SCREENSHOT_REQUEST_CODE)
-                pendingResult = result // save flutter callback
+                pendingResult = result 
             } else {
                 result.notImplemented()
             }
