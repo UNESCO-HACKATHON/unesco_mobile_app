@@ -16,7 +16,7 @@ class ScreenRecordBloc extends Bloc<ScreenRecordEvent, ScreenRecordState> {
           emit(ScreenRecordState(isRecording: true));
 
           // Wait 2 seconds and stop
-          await Future.delayed(Duration(seconds: 2));
+          await Future.delayed(Duration(seconds: 10));
           await recordService.stopRecording();
 
           emit(ScreenRecordState(isRecording: false));

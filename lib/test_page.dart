@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:unesco_mobile_app/screen_record/bloc/screen_record_bloc.dart';
 import 'package:unesco_mobile_app/screen_record/bloc/screen_record_event.dart';
 import 'package:unesco_mobile_app/screen_record/bloc/screen_record_state.dart';
+import 'package:unesco_mobile_app/screen_shot/bloc/screen_shot_bloc.dart';
+import 'package:unesco_mobile_app/screen_shot/bloc/screen_shot_event.dart';
 
 class TestPage extends StatelessWidget {
   // final _receivePort = ReceivePort();
@@ -28,6 +30,12 @@ class TestPage extends StatelessWidget {
                 context.read<ScreenRecordBloc>().add(StopRecording());
               },
               child: Text("Stop recording"),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<ScreenShotBloc>().add(TakeScreenShot());
+              },
+              child: Text("take screen shot"),
             ),
             BlocBuilder<ScreenRecordBloc, ScreenRecordState>(
               builder: (context, state) {
